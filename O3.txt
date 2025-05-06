@@ -1,0 +1,6 @@
+#vertex distance parent
+0 0 -1
+1 4 0
+2 2 0
+3 7 4
+4 4 2
