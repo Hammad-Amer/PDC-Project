@@ -91,24 +91,27 @@ void readSSSP(const string &file, vector<double> &Dist, vector<int> &Parent, int
 
 // UPDATES READER
 struct Update { bool isInsert; int u, v; double w; };
-vector<Update> readUpdates(const string &file) {
-    ifstream in(file);
+vector<Update> readUpdates(const string &f) {
+    ifstream in(f);
     if (!in) MPI_Abort(MPI_COMM_WORLD, 1);
-    vector<Update> updates;
+    vector<Update> U;
     string line;
     while (getline(in, line)) {
         if (line.empty() || line[0] == '#') continue;
         istringstream ss(line);
-        char typ; ss >> typ;
-        if (typ == '-') {
-            int u, v; ss >> u >> v;
-            updates.push_back({false, u, v, 0.0});
-        } else if (typ == '+') {
-            int u, v; double w; ss >> u >> v >> w;
-            updates.push_back({true, u, v, w});
+        vector<string> tok;
+        string t;
+        while (ss >> t) tok.push_back(t);
+        if (tok.size() == 2) {
+            int u = stoi(tok[0]), v = stoi(tok[1]);
+            U.push_back({false, u, v, 0.0});
+        } else if (tok.size() == 3) {
+            int u = stoi(tok[0]), v = stoi(tok[1]);
+            double w = stod(tok[2]);
+            U.push_back({true, u, v, w});
         }
     }
-    return updates;
+    return U;
 }
 
 
